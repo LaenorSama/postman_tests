@@ -10,16 +10,14 @@ env:
     BROWSER: ${{ inputs.BROWSER || 'OperaGX' }}
     OS: ${{ inputs.OS || 'Win_11' }}
     BRANCH: ${{ github.ref_name }}
+
 on:
- #пуш и пулл реквест
   push:
-     branches:
+    branches:
       - main
   pull_request:
     branches:
       - main
-      
-# вручную    
   workflow_dispatch:
     inputs:
       BROWSER:
@@ -43,7 +41,7 @@ permissions: write-all
 
 jobs:
   test:
-    name: Run tests and generate Allure Report 
+    name: Run tests and generate Allure Report
     runs-on: ubuntu-latest
 
     steps:
@@ -53,22 +51,19 @@ jobs:
       - name: Install Newman
         run: npm install -g newman
         
-    # Устанавливаем allurectl
+      # Устанавливаем allurectl
       - name: Install allurectl
         uses: allure-framework/setup-allurectl@v1
         with:
           allure-endpoint: ${{ env.ENDPOINT }}
           allure-token: ${{ env.TOKEN }}
           allure-project-id: ${{ env.PROJECT_ID }}
-      
-      - name: remove old directoryes
-        run:
-          rm -rf allure-results .allure  
-          
+
+      - name: Remove old directories
+        run: |
+          rm -rf allure-results .allure
+
       - name: Run Postman Collection
         run: |
-          allurectl watch newman run postman/collection.json \
-            --env-var ENDPOINT=${{ secrets.ENDPOINT }} \
-            --env-var TOKEN=${{ secrets.TOKEN }} \
-            -r cli,junit \
+          allurectl watch newman run postman/collection.json --reporter allure -r cli,junit \
             --reporter-junit-export test-results.xml
