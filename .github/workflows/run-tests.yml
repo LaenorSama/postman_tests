@@ -71,12 +71,12 @@ jobs:
 
       - name: Run Postman Collection
         run: |
-          newman run postman/collection.json \
+          allurectl watch "newman run postman/collection.json \
             --env-var ENDPOINT=${{ secrets.ENDPOINT }} \
             --env-var TOKEN=${{ secrets.TOKEN }} \
             -r allure,cli,junit \
             --reporters allure,cli,junit \
-            --reporter-allure-export ${{ env.ALLURE_RESULTS }}
+            --reporter-allure-export ${{ env.ALLURE_RESULTS }}"
 
       - name: Check Allure results directory after run
         run: ls -alh ${{ env.ALLURE_RESULTS }}
