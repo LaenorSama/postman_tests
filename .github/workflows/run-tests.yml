@@ -75,7 +75,8 @@ jobs:
             --env-var ENDPOINT=${{ secrets.ENDPOINT }} \
             --env-var TOKEN=${{ secrets.TOKEN }} \
             -r allure,cli,junit \
-            --reporters allure,cli,junit"
+            --reporters allure,cli,junit \
+            --reporter-allure-export ${{ env.ALLURE_RESULTS }}"
         continue-on-error: true
         env:
             BRANCH: ${{ github.ref_name }}
