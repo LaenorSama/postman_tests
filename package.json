@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "newman run ./collection.json -r allure"
+    "test": "newman run ./postman/collection.json -r allure"
   },
   "keywords": [],
   "author": "",
