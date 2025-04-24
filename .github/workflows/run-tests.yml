@@ -92,13 +92,24 @@ jobs:
         run: ls -alh ${{ env.ALLURE_RESULTS }}
 
       # Запуск Postman коллекции с репортером Allure
+      #- name: Run Postman Collection with Allure Reporter
+      #  run: |
+      #    newman run postman/collection.json \
+      #      --env-var ENDPOINT=${{ env.ENDPOINT }} \
+      #      --env-var TOKEN=${{ env.TOKEN }} \
+      #      -r junit \
+      #      --reporter-junit-export ${{ env.ALLURE_RESULTS }} \
+      #      --verbose
+      #  continue-on-error: true
+
+      # Запуск Postman коллекции с репортером Allure
       - name: Run Postman Collection with Allure Reporter
         run: |
           newman run postman/collection.json \
             --env-var ENDPOINT=${{ env.ENDPOINT }} \
             --env-var TOKEN=${{ env.TOKEN }} \
-            -r junit \
-            --reporter-junit-export ${{ env.ALLURE_RESULTS }} \
+            -r allure \
+            --reporter-allure-export ${{ env.ALLURE_RESULTS }} \
             --verbose
         continue-on-error: true
 
