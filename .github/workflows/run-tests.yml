@@ -82,14 +82,14 @@ jobs:
         run: ls -alh ${{ env.ALLURE_RESULTS }}
 
       # Запуск Postman коллекции без репортера Allure, чтобы проверить выполнение
-      - name: Run Postman Collection (without Allure reporter)
-        run: #|
-          #newman run postman/collection.json \
-          #  --env-var ENDPOINT=${{ env.ENDPOINT }} \
-          #  --env-var TOKEN=${{ env.TOKEN }} \
-          #  -r cli
-          npm test
-        continue-on-error: true
+      #- name: Run Postman Collection (without Allure reporter)
+      #  run: #|
+      #    #newman run postman/collection.json \
+      #    #  --env-var ENDPOINT=${{ env.ENDPOINT }} \
+      #    #  --env-var TOKEN=${{ env.TOKEN }} \
+      #    #  -r cli
+      #    npm test
+      #  continue-on-error: true
 
       # Проверяем содержимое директории после выполнения тестов
       - name: Check Allure results directory after run (no Allure reporter)
@@ -109,7 +109,7 @@ jobs:
       # Запуск Postman коллекции с репортером Allure
       - name: Run Postman Collection with Allure Reporter
         run: 
-          allurectl watch -- npm test
+          allurectl watch -- /postman/collection1.json npm test
         continue-on-error: true
 
       # Дополнительная диагностика: проверим, есть ли какие-либо файлы отчета Allure
