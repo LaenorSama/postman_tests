@@ -66,13 +66,6 @@ jobs:
           allure-token: ${{ env.TOKEN }}
           allure-project-id: ${{ env.PROJECT_ID }}
 
-      # Установи Allure CLI
-      - name: Install Allure CLI
-        run: |
-          sudo apt-add-repository ppa:qameta/allure -y
-          sudo apt-get update
-          sudo apt-get install allure
-
       # Удаляем старые директории
       - name: Remove old directories
         run: |
@@ -97,10 +90,6 @@ jobs:
             -r cli
         continue-on-error: true
 
-      # Проверяем содержимое директории после выполнения тестов
-      - name: Check Allure results directory after run (no Allure reporter)
-        run: ls -alh ${{ env.ALLURE_RESULTS }}
-
       # Запуск Postman коллекции с репортером Allure
       - name: Run Postman Collection with Allure Reporter
         run: |
@@ -118,10 +107,10 @@ jobs:
         run: |
           find ${{ env.ALLURE_RESULTS }} -type f
 
-      - name: Generate Allure Report from JUnit XML
-        run: |
-          allure generate ${{ env.ALLURE_RESULTS }} --clean
-        continue-on-error: true
+      #- name: Generate Allure Report from JUnit XML
+      #  run: |
+      #    allure generate ${{ env.ALLURE_RESULTS }} --clean
+      #  continue-on-error: true
           
       - name: Upload Allure Report to TestOps
         run: |
