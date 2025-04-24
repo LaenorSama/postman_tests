@@ -75,12 +75,12 @@ jobs:
 
       - name: Run Postman Collection
         run: |
-          allurectl watch newman run postman/collection.json \
+          allurectl watch "newman run postman/collection.json \
             --env-var ENDPOINT=${{ env.ENDPOINT }} \
             --env-var TOKEN=${{ env.TOKEN }} \
             -r allure,cli,junit \
             --reporters allure,cli,junit \
-            --reporter-allure-export ${{ env.ALLURE_RESULTS }}
+            --reporter-allure-export ${{ env.ALLURE_RESULTS }}"
         continue-on-error: true
         #env:
         #    BRANCH: ${{ github.ref_name }}
