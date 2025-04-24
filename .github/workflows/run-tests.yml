@@ -83,11 +83,12 @@ jobs:
 
       # Запуск Postman коллекции без репортера Allure, чтобы проверить выполнение
       - name: Run Postman Collection (without Allure reporter)
-        run: |
-          newman run postman/collection.json \
-            --env-var ENDPOINT=${{ env.ENDPOINT }} \
-            --env-var TOKEN=${{ env.TOKEN }} \
-            -r cli
+        run: #|
+          #newman run postman/collection.json \
+          #  --env-var ENDPOINT=${{ env.ENDPOINT }} \
+          #  --env-var TOKEN=${{ env.TOKEN }} \
+          #  -r cli
+          npm test
         continue-on-error: true
 
       # Проверяем содержимое директории после выполнения тестов
@@ -116,11 +117,11 @@ jobs:
         run: |
           find ${{ env.ALLURE_RESULTS }} -type f
           
-      - name: Generate Allure Report from JUnit XML
-        run: |
-          allure generate ${{ env.ALLURE_RESULTS }} --clean
-        continue-on-error: true
-          
-      - name: Upload Allure Report to TestOps
-        run: |
-          allurectl upload ${{ env.ALLURE_RESULTS }}
+      #- name: Generate Allure Report from JUnit XML
+      #  run: |
+      #    allure generate ${{ env.ALLURE_RESULTS }} --clean
+      #  continue-on-error: true
+      #    
+      #- name: Upload Allure Report to TestOps
+      #  run: |
+      #    allurectl upload ${{ env.ALLURE_RESULTS }}
