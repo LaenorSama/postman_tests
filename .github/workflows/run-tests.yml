@@ -78,8 +78,21 @@ jobs:
       - name: Check if allure-results directory is empty
         run: ls -alh ${{ env.ALLURE_RESULTS }}
 
-      # Запуск Postman коллекции с сохранением результатов в директорию
-      - name: Run Postman Collection
+      # Запуск Postman коллекции без репортера Allure, чтобы проверить выполнение
+      - name: Run Postman Collection (without Allure reporter)
+        run: |
+          newman run postman/collection.json \
+            --env-var ENDPOINT=${{ env.ENDPOINT }} \
+            --env-var TOKEN=${{ env.TOKEN }} \
+            -r cli
+        continue-on-error: true
+
+      # Проверяем содержимое директории после выполнения тестов
+      - name: Check Allure results directory after run
+        run: ls -alh ${{ env.ALLURE_RESULTS }}
+
+      # Запуск Postman коллекции с репортером Allure
+      - name: Run Postman Collection with Allure Reporter
         run: |
           newman run postman/collection.json \
             --env-var ENDPOINT=${{ env.ENDPOINT }} \
@@ -87,10 +100,6 @@ jobs:
             -r allure \
             --reporter-allure-export ${{ env.ALLURE_RESULTS }}
         continue-on-error: true
-
-      # Проверяем содержимое директории после выполнения тестов
-      - name: Check Allure results directory after run
-        run: ls -alh ${{ env.ALLURE_RESULTS }}
 
       # Дополнительная диагностика: проверим, есть ли какие-либо файлы отчета Allure
       - name: Check Allure report files
