@@ -1,170 +1,103 @@
-{
-	"info": {
-		"_postman_id": "73115df4-93dc-4da6-b5f2-d1818f4ac632",
-		"name": "TestOps",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "15533505",
-		"_collection_link": "https://landeron-team.postman.co/workspace/My-Workspace~5b301d1f-af4c-4b52-89f6-fe1cca8e4679/collection/15533505-73115df4-93dc-4da6-b5f2-d1818f4ac632?action=share&source=collection_link&creator=15533505"
-	},
-	"item": [
-		{
-			"name": "Get assigned members",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{JWT_TOKEN}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{ENDPOINT}}/api/launch/1797/assignees",
-					"host": [
-						"{{ENDPOINT}}"
-					],
-					"path": [
-						"api",
-						"launch",
-						"1797",
-						"assignees"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get projects",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{JWT_TOKEN}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{ENDPOINT}}/api/project?page=0&size=100&sort=name%2CASC",
-					"host": [
-						"{{ENDPOINT}}"
-					],
-					"path": [
-						"api",
-						"project"
-					],
-					"query": [
-						{
-							"key": "page",
-							"value": "0"
-						},
-						{
-							"key": "size",
-							"value": "100"
-						},
-						{
-							"key": "sort",
-							"value": "name%2CASC"
-						}
-					]
-				}
-			},
-			"response": []
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"packages": {},
-				"exec": [
-					"// Выводим все переменные окружения для проверки\r",
-					"// открыть консоль Windows/Linux: Ctrl + Alt + C\r",
-					"// console.log(\"Все переменные окружения: \", pm.environment.toObject());\r",
-					"\r",
-					"pm.sendRequest({\r",
-					"    url: \"https://demo.qatools.cloud/api/uaa/oauth/token\", // URL для запроса на получение токена от вашего инстанса\r",
-					"    method: \"POST\", // Метод HTTP запроса — POST\r",
-					"    header: {\r",
-					"        \"Accept\": \"application/json\" // Заголовок, который говорит, что ожидаем ответ в формате JSON\r",
-					"    },\r",
-					"    body: {\r",
-					"        mode: \"urlencoded\", // Тип тела запроса — x-www-form-urlencoded\r",
-					"        urlencoded: [\r",
-					"            { key: \"grant_type\", value: \"apitoken\", type: \"text\" }, // Параметр grant_type с типом apitoken\r",
-					"            { key: \"scope\", value: \"openid\", type: \"text\" }, // Параметр scope\r",
-					"            { key: \"token\", value: pm.environment.get(\"TOKEN\"), type: \"text\" } // Используем pm.environment.get для получения переменной\r",
-					"        ]\r",
-					"    }\r",
-					"}, function (err, res) {\r",
-					"    if (!err && res.json().access_token) {\r",
-					"        var token = res.json().access_token;\r",
-					"        pm.environment.set(\"JWT_TOKEN\", token);\r",
-					"        console.log(\"Bearer-токен получен!\");\r",
-					"    } else {\r",
-					"        console.log(\"Ошибка получения токена:\", err || res.text());\r",
-					"    }\r",
-					"});"
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"packages": {},
-				"exec": [
-					"// 🧪 Хранилище тестов\r",
-					"if (!pm.globals.has(\"testResults\")) {\r",
-					"    pm.globals.set(\"testResults\", JSON.stringify([]));\r",
-					"}\r",
-					"\r",
-					"let currentResults = JSON.parse(pm.globals.get(\"testResults\"));\r",
-					"\r",
-					"// ✅ Тест: статус 200\r",
-					"var testName = \"Статус ответа 200\";\r",
-					"var passed = pm.response.code === 200;\r",
-					"\r",
-					"pm.test(testName, () => {\r",
-					"    pm.expect(pm.response.code).to.eql(200);\r",
-					"});\r",
-					"\r",
-					"// ⏱ Время ответа\r",
-					"var responseTime = pm.response.responseTime;\r",
-					"console.log(`⏱ Время ответа: ${responseTime} мс`);\r",
-					"\r",
-					"// 🧾 Лог в консоль\r",
-					"console.log(`📋 Тесты для запроса: ${pm.info.requestName}`);\r",
-					"console.log(`${passed ? \"✅\" : \"❌\"} ${testName}`);\r",
-					"\r",
-					"// 📦 Добавим в глобальное хранилище (по желанию — можно в env)\r",
-					"currentResults.push({\r",
-					"    request: pm.info.requestName,\r",
-					"    test: testName,\r",
-					"    passed: passed,\r",
-					"    status: pm.response.code,\r",
-					"    time: responseTime\r",
-					"});\r",
-					"\r",
-					"pm.globals.set(\"testResults\", JSON.stringify(currentResults));\r",
-					"\r",
-					"// 📈 Обновим статистику\r",
-					"var totalRequests = parseInt(pm.environment.get(\"totalRequests\") || \"0\") + 1;\r",
-					"var totalTime = parseInt(pm.environment.get(\"totalTime\") || \"0\") + responseTime;\r",
-					"\r",
-					"pm.environment.set(\"totalRequests\", totalRequests);\r",
-					"pm.environment.set(\"totalTime\", totalTime);\r",
-					"pm.environment.set(\"avgTime\", (totalTime / totalRequests).toFixed(2));\r",
-					"\r",
-					"// 🧾 Ошибки (для финального вывода)\r",
-					"if (!passed) {\r",
-					"    var failures = pm.environment.get(\"failures\") || \"\";\r",
-					"    failures += `\\n[${pm.info.requestName}] - статус: ${pm.response.code}`;\r",
-					"    pm.environment.set(\"failures\", failures);\r",
-					"}\r"
-				]
-			}
-		}
-	]
+// 🧪 Хранилище тестов
+if (!pm.globals.has("testResults")) {
+    pm.globals.set("testResults", JSON.stringify([]));
+}
+
+let currentResults = JSON.parse(pm.globals.get("testResults"));
+
+// Логируем запросы
+let logMessage = `Запрос: ${pm.info.requestName}\nСтатус ответа: ${pm.response.code}\nВремя ответа: ${pm.response.responseTime} мс\n`;
+
+// Сохраняем лог как вложение
+pm.test("Log attachment", function () {
+    let logFileName = pm.info.requestName + "_log.txt";
+    let logContent = logMessage + "\n\n----- Test Log End -----";
+
+    // Создаем вложение
+    allure.addAttachment(logFileName, logContent, 'text/plain');
+});
+
+// ✅ Тест: Статус ответа 200 для запроса "Get assigned members"
+var testName = "Статус ответа 200 для Get assigned members";
+var passed = pm.response.code === 200;
+
+pm.test("Test: " + testName, () => {
+    pm.expect(pm.response.code).to.eql(200);
+});
+
+// ⏱ Время ответа
+var responseTime = pm.response.responseTime;
+console.log(`⏱ Время ответа для Get assigned members: ${responseTime} мс`);
+
+// 🧾 Лог в консоль
+console.log(`📋 Тесты для запроса: ${pm.info.requestName}`);
+console.log(`${passed ? "✅" : "❌"} ${testName}`);
+
+// 📦 Добавим в глобальное хранилище (по желанию — можно в env)
+currentResults.push({
+    request: pm.info.requestName,
+    test: testName,
+    passed: passed,
+    status: pm.response.code,
+    time: responseTime
+});
+
+pm.globals.set("testResults", JSON.stringify(currentResults));
+
+// 📈 Обновим статистику
+var totalRequests = parseInt(pm.environment.get("totalRequests") || "0") + 1;
+var totalTime = parseInt(pm.environment.get("totalTime") || "0") + responseTime;
+
+pm.environment.set("totalRequests", totalRequests);
+pm.environment.set("totalTime", totalTime);
+pm.environment.set("avgTime", (totalTime / totalRequests).toFixed(2));
+
+// 🧾 Ошибки (для финального вывода)
+if (!passed) {
+    var failures = pm.environment.get("failures") || "";
+    failures += `\n[${pm.info.requestName}] - статус: ${pm.response.code}`;
+    pm.environment.set("failures", failures);
+}
+
+
+// ✅ Тест: Статус ответа 200 для запроса "Get projects"
+testName = "Статус ответа 200 для Get projects";
+passed = pm.response.code === 200;
+
+pm.test("Test: " + testName, () => {
+    pm.expect(pm.response.code).to.eql(200);
+});
+
+// ⏱ Время ответа
+responseTime = pm.response.responseTime;
+console.log(`⏱ Время ответа для Get projects: ${responseTime} мс`);
+
+// 🧾 Лог в консоль
+console.log(`📋 Тесты для запроса: ${pm.info.requestName}`);
+console.log(`${passed ? "✅" : "❌"} ${testName}`);
+
+// 📦 Добавим в глобальное хранилище (по желанию — можно в env)
+currentResults.push({
+    request: pm.info.requestName,
+    test: testName,
+    passed: passed,
+    status: pm.response.code,
+    time: responseTime
+});
+
+pm.globals.set("testResults", JSON.stringify(currentResults));
+
+// 📈 Обновим статистику
+totalRequests = parseInt(pm.environment.get("totalRequests") || "0") + 1;
+totalTime = parseInt(pm.environment.get("totalTime") || "0") + responseTime;
+
+pm.environment.set("totalRequests", totalRequests);
+pm.environment.set("totalTime", totalTime);
+pm.environment.set("avgTime", (totalTime / totalRequests).toFixed(2));
+
+// 🧾 Ошибки (для финального вывода)
+if (!passed) {
+    failures = pm.environment.get("failures") || "";
+    failures += `\n[${pm.info.requestName}] - статус: ${pm.response.code}`;
+    pm.environment.set("failures", failures);
 }
