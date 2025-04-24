@@ -51,6 +51,10 @@ jobs:
       - name: Install Newman
         run: npm install -g newman
         
+      # Устанавливаем репортер Allure для Newman
+      - name: Install Newman Allure Reporter
+        run: npm install -g newman-reporter-allure
+        
       # Устанавливаем allurectl
       - name: Install allurectl
         uses: allure-framework/setup-allurectl@v1
@@ -71,18 +75,19 @@ jobs:
 
       - name: Run Postman Collection
         run: |
-          allurectl watch "newman run postman/collection.json \
-            --env-var ENDPOINT=${{ secrets.ENDPOINT }} \
-            --env-var TOKEN=${{ secrets.TOKEN }} \
+          allurectl watch newman run postman/collection.json \
+            --env-var ENDPOINT=${{ env.ENDPOINT }} \
+            --env-var TOKEN=${{ env.TOKEN }} \
             -r allure,cli,junit \
             --reporters allure,cli,junit \
-            --reporter-allure-export ${{ env.ALLURE_RESULTS }}"
+            --reporter-allure-export ${{ env.ALLURE_RESULTS }}
         continue-on-error: true
-        env:
-            BRANCH: ${{ github.ref_name }}
-            ENDPOINT: ${{ env.ALLURE_ENDPOINT }}
-            BROWSER: ${{ github.event.inputs.BROWSER}}
-            OS: ${{ github.event.inputs.OS}}
-            ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}
+        #env:
+        #    BRANCH: ${{ github.ref_name }}
+        #    ENDPOINT: ${{ env.ALLURE_ENDPOINT }}
+        #    BROWSER: ${{ github.event.inputs.BROWSER}}
+        #    OS: ${{ github.event.inputs.OS}}
+        #    ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}
+            
       - name: Check Allure results directory after run
         run: ls -alh ${{ env.ALLURE_RESULTS }}
