@@ -66,6 +66,13 @@ jobs:
           allure-token: ${{ env.TOKEN }}
           allure-project-id: ${{ env.PROJECT_ID }}
 
+      # Установи Allure CLI
+      - name: Install Allure CLI
+        run: |
+          sudo apt-add-repository ppa:qameta/allure -y
+          sudo apt-get update
+          sudo apt-get install allure
+
       # Удаляем старые директории
       - name: Remove old directories
         run: |
