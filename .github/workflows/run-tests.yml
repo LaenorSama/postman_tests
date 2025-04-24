@@ -45,21 +45,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Шаг 1: чекаут репозитория
+      # чекаут репозитория
       - name: Checkout repo
         uses: actions/checkout@v4.2.2
-        
-      # Шаг 2: Установка Node.js и зависимостей
-      - name: Set up Node 20
-        uses: actions/setup-node@v4.1.0
-        with:
-          node-version: 20
-          cache: npm
 
-      - name: Install npm dependencies
-        run: npm install
-
-      # Шаг 3: Установка Newman и Allure Reporter
+      # Установка Newman и Allure Reporter
       - name: Install Newman and Allure Reporter
         run: |
           npm install -g newman
