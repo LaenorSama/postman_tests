@@ -68,7 +68,9 @@ jobs:
           rm -rf allure-results .allure
 
       - name: Create Allure results directory
-        run: mkdir -p ${{ env.ALLURE_RESULTS }}
+        run: |
+          mkdir -p ${{ env.ALLURE_RESULTS }}
+          chmod -R 777 ${{ env.ALLURE_RESULTS }}
 
       - name: Check if allure-results directory is empty
         run: ls -alh ${{ env.ALLURE_RESULTS }}
