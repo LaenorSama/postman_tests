@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # чекаут репозитория
+      # Чекаут репозитория
       - name: Checkout repo
         uses: actions/checkout@v4.2.2
 
@@ -54,8 +54,8 @@ jobs:
         run: |
           npm install -g newman
           npm install -g newman-reporter-allure
-        
-      # Устанавливаем allurectl
+
+      # Установка allurectl
       - name: Install allurectl
         uses: allure-framework/setup-allurectl@v1
         with:
@@ -63,27 +63,22 @@ jobs:
           allure-token: ${{ env.TOKEN }}
           allure-project-id: ${{ env.PROJECT_ID }}
 
+      # Удаляем старые директории
       - name: Remove old directories
         run: |
           rm -rf allure-results .allure
 
+      # Создаем директорию для отчетов Allure
       - name: Create Allure results directory
         run: |
           mkdir -p ${{ env.ALLURE_RESULTS }}
           chmod -R 777 ${{ env.ALLURE_RESULTS }}
 
+      # Проверяем, что директория пуста
       - name: Check if allure-results directory is empty
         run: ls -alh ${{ env.ALLURE_RESULTS }}
 
-      #- name: Run Postman Collection
-      #  run: |
-      #    allurectl watch "newman run postman/collection.json \
-      #      --env-var ENDPOINT=${{ env.ENDPOINT }} \
-      #      --env-var TOKEN=${{ env.TOKEN }} \
-      #      -r allure,cli,junit \
-      #      --reporters allure,cli,junit \
-      #      --reporter-allure-export ${{ env.ALLURE_RESULTS }}"
-      #  continue-on-error: true
+      # Запуск Postman коллекции с сохранением результатов в директорию
       - name: Run Postman Collection
         run: |
           newman run postman/collection.json \
@@ -91,7 +86,13 @@ jobs:
             --env-var TOKEN=${{ env.TOKEN }} \
             -r allure \
             --reporter-allure-export ${{ env.ALLURE_RESULTS }}
+        continue-on-error: true
 
-            
+      # Проверяем содержимое директории после выполнения тестов
       - name: Check Allure results directory after run
         run: ls -alh ${{ env.ALLURE_RESULTS }}
+
+      # Дополнительная диагностика: проверим, есть ли какие-либо файлы отчета Allure
+      - name: Check Allure report files
+        run: |
+          find ${{ env.ALLURE_RESULTS }} -type f
