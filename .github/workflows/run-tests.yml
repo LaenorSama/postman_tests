@@ -53,10 +53,10 @@ jobs:
         run: npm install
       
       # Установка Newman и Allure Reporter
-      #- name: Install Newman and Allure Reporter
-      #  run: |
-      #    npm install -g newman
-      #    npm install -g newman-reporter-allure
+      - name: Install Newman and Allure Reporter
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-allure
 
       # Установка allurectl
       - name: Install allurectl
@@ -82,35 +82,34 @@ jobs:
         run: ls -alh ${{ env.ALLURE_RESULTS }}
 
       # Запуск Postman коллекции без репортера Allure, чтобы проверить выполнение
-      #- name: Run Postman Collection (without Allure reporter)
-      #  run: #|
-      #    #newman run postman/collection.json \
-      #    #  --env-var ENDPOINT=${{ env.ENDPOINT }} \
-      #    #  --env-var TOKEN=${{ env.TOKEN }} \
-      #    #  -r cli
-      #    npm test
-      #  continue-on-error: true
+      - name: Run Postman Collection (without Allure reporter)
+        run: |
+          newman run postman/collection.json \
+            --env-var ENDPOINT=${{ env.ENDPOINT }} \
+            --env-var TOKEN=${{ env.TOKEN }} \
+            -r cli
+        continue-on-error: true
 
       # Проверяем содержимое директории после выполнения тестов
       - name: Check Allure results directory after run (no Allure reporter)
         run: ls -alh ${{ env.ALLURE_RESULTS }}
 
       # Запуск Postman коллекции с репортером Allure
-      #- name: Run Postman Collection with Allure Reporter
-      #  run: |
-      #    newman run postman/collection.json \
-      #      --env-var ENDPOINT=${{ env.ENDPOINT }} \
-      #      --env-var TOKEN=${{ env.TOKEN }} \
-      #      -r junit \
-      #      --reporter-junit-export ${{ env.ALLURE_RESULTS }} \
-      #      --verbose
-      #  continue-on-error: true
+      - name: Run Postman Collection with Allure Reporter
+        run: |
+          newman run postman/collection.json \
+            --env-var ENDPOINT=${{ env.ENDPOINT }} \
+            --env-var TOKEN=${{ env.TOKEN }} \
+            -r junit \
+            --reporter-junit-export ${{ env.ALLURE_RESULTS }} \
+            --verbose
+        continue-on-error: true
 
       # Запуск Postman коллекции с репортером Allure
-      - name: Run Postman Collection with Allure Reporter
-        run: 
-          allurectl watch npm test
-        continue-on-error: true
+      #- name: Run Postman Collection with Allure Reporter
+      #  run: 
+      #    allurectl watch npm test
+      #  continue-on-error: true
 
       # Дополнительная диагностика: проверим, есть ли какие-либо файлы отчета Allure
       - name: Check Allure report files after run
