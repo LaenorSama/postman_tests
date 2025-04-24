@@ -64,10 +64,10 @@ jobs:
           rm -rf allure-results .allure
 
       - name: Create Allure results directory
-        run: mkdir -p ./out/allure-results
+        run: mkdir -p ${{ env.ALLURE_RESULTS }}
 
       - name: Check if allure-results directory is empty
-        run: ls -alh ./out/allure-results
+        run: ls -alh ${{ env.ALLURE_RESULTS }}
 
       - name: Run Postman Collection
         run: |
@@ -76,7 +76,7 @@ jobs:
             --env-var TOKEN=${{ secrets.TOKEN }} \
             -r allure,cli,junit \
             --reporters allure,cli,junit \
-            --reporter-allure-export ${env.ALLURE_RESULTS}
+            --reporter-allure-export ${{ env.ALLURE_RESULTS }}
 
       - name: Check Allure results directory after run
-        run: ls -alh ./out/allure-results
+        run: ls -alh ${{ env.ALLURE_RESULTS }}
