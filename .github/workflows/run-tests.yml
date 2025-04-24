@@ -48,12 +48,15 @@ jobs:
       # Чекаут репозитория
       - name: Checkout repo
         uses: actions/checkout@v4.2.2
-
+        
+      - name: Install npm
+        run: npm install
+      
       # Установка Newman и Allure Reporter
-      - name: Install Newman and Allure Reporter
-        run: |
-          npm install -g newman
-          npm install -g newman-reporter-allure
+      #- name: Install Newman and Allure Reporter
+      #  run: |
+      #    npm install -g newman
+      #    npm install -g newman-reporter-allure
 
       # Установка allurectl
       - name: Install allurectl
@@ -104,13 +107,8 @@ jobs:
 
       # Запуск Postman коллекции с репортером Allure
       - name: Run Postman Collection with Allure Reporter
-        run: |
-          newman run postman/collection.json \
-            --env-var ENDPOINT=${{ env.ENDPOINT }} \
-            --env-var TOKEN=${{ env.TOKEN }} \
-            -r allure \
-            --reporter-allure-export ${{ env.ALLURE_RESULTS }} \
-            --verbose
+        run: 
+          allurectl watch -- npm test
         continue-on-error: true
 
       # Дополнительная диагностика: проверим, есть ли какие-либо файлы отчета Allure
