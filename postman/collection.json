@@ -18,14 +18,14 @@
           }
         ],
         "url": {
-          "raw": "{{ENDPOINT}}/api/launch/1490/assignees",
+          "raw": "{{ENDPOINT}}/api/launch/1789/assignees",
           "host": [
             "{{ENDPOINT}}"
           ],
           "path": [
             "api",
             "launch",
-            "1490",
+            "1789",
             "assignees"
           ]
         }
