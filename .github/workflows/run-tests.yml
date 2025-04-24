@@ -1,23 +1,73 @@
 name: Run Postman Tests
 
+# переменные окружения
+env:
+    ENDPOINT: ${{ secrets.ENDPOINT }}
+    PROJECT_ID: ${{ secrets.PROJECT_ID }}
+    TOKEN: ${{ secrets.TOKEN }}
+    ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}
+    ALLURE_RESULTS: "./out/allure-results"
+    BROWSER: ${{ inputs.BROWSER || 'OperaGX' }}
+    OS: ${{ inputs.OS || 'Win_11' }}
+    BRANCH: ${{ github.ref_name }}
 on:
+ #пуш и пулл реквест
   push:
-    branches: [main]
+     branches:
+      - main
+  pull_request:
+    branches:
+      - main
+      
+# вручную    
+  workflow_dispatch:
+    inputs:
+      BROWSER:
+        description: Browser
+        required: false
+        default: "OperaGX"
+      OS:
+        description: OS
+        required: false
+        default: "Win_11"
+      ALLURE_JOB_RUN_ID:
+        description: "ALLURE_JOB_RUN_ID - service parameter (leave blank)"
+        required: false
+        default: ""
+      ALLURE_USERNAME:
+        description: "ALLURE_USERNAME - service parameter (leave blank)"
+        required: false
+        default: ""
+
+permissions: write-all
 
 jobs:
   test:
+    name: Run tests and generate Allure Report 
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.2
 
       - name: Install Newman
         run: npm install -g newman
-
+        
+    # Устанавливаем allurectl
+      - name: Install allurectl
+        uses: allure-framework/setup-allurectl@v1
+        with:
+          allure-endpoint: ${{ env.ENDPOINT }}
+          allure-token: ${{ env.TOKEN }}
+          allure-project-id: ${{ env.PROJECT_ID }}
+      
+      - name: remove old directoryes
+        run:
+          rm -rf allure-results .allure  
+          
       - name: Run Postman Collection
         run: |
-          newman run postman/collection.json \
+          allurectl watch newman run postman/collection.json \
             --env-var ENDPOINT=${{ secrets.ENDPOINT }} \
             --env-var TOKEN=${{ secrets.TOKEN }} \
             -r cli,junit \
