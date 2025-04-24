@@ -75,21 +75,23 @@ jobs:
       - name: Check if allure-results directory is empty
         run: ls -alh ${{ env.ALLURE_RESULTS }}
 
+      #- name: Run Postman Collection
+      #  run: |
+      #    allurectl watch "newman run postman/collection.json \
+      #      --env-var ENDPOINT=${{ env.ENDPOINT }} \
+      #      --env-var TOKEN=${{ env.TOKEN }} \
+      #      -r allure,cli,junit \
+      #      --reporters allure,cli,junit \
+      #      --reporter-allure-export ${{ env.ALLURE_RESULTS }}"
+      #  continue-on-error: true
       - name: Run Postman Collection
         run: |
-          allurectl watch "newman run postman/collection.json \
+          newman run postman/collection.json \
             --env-var ENDPOINT=${{ env.ENDPOINT }} \
             --env-var TOKEN=${{ env.TOKEN }} \
-            -r allure,cli,junit \
-            --reporters allure,cli,junit \
-            --reporter-allure-export ${{ env.ALLURE_RESULTS }}"
-        continue-on-error: true
-        #env:
-        #    BRANCH: ${{ github.ref_name }}
-        #    ENDPOINT: ${{ env.ALLURE_ENDPOINT }}
-        #    BROWSER: ${{ github.event.inputs.BROWSER}}
-        #    OS: ${{ github.event.inputs.OS}}
-        #    ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}
+            -r allure \
+            --reporter-allure-export ${{ env.ALLURE_RESULTS }}
+
             
       - name: Check Allure results directory after run
         run: ls -alh ${{ env.ALLURE_RESULTS }}
