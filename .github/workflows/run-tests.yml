@@ -88,7 +88,7 @@ jobs:
         continue-on-error: true
 
       # Проверяем содержимое директории после выполнения тестов
-      - name: Check Allure results directory after run
+      - name: Check Allure results directory after run (no Allure reporter)
         run: ls -alh ${{ env.ALLURE_RESULTS }}
 
       # Запуск Postman коллекции с репортером Allure
@@ -102,6 +102,6 @@ jobs:
         continue-on-error: true
 
       # Дополнительная диагностика: проверим, есть ли какие-либо файлы отчета Allure
-      - name: Check Allure report files
+      - name: Check Allure report files after run
         run: |
           find ${{ env.ALLURE_RESULTS }} -type f
