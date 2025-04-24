@@ -11,6 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "newman": "^5.3.2",
-    "newman-reporter-allure": "^2.1.0"
+    "newman-reporter-allure": "^2.1.0",
+    "uuid": "^8.3.2",
+    "@faker-js/faker": "^7.0.0"
   }
 }
