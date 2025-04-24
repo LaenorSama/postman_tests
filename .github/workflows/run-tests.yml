@@ -75,7 +75,8 @@ jobs:
             --env-var ENDPOINT=${{ secrets.ENDPOINT }} \
             --env-var TOKEN=${{ secrets.TOKEN }} \
             -r allure,cli,junit \
-            --allure-attachment-dir=${{ env.ALLURE_RESULTS }}
+            --reporters allure,cli,junit \
+            --reporter-allure-export ${env.ALLURE_RESULTS}
 
       - name: Check Allure results directory after run
         run: ls -alh ./out/allure-results
