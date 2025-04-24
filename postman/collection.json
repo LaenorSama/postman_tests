@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "73115df4-93dc-4da6-b5f2-d1818f4ac632",
-		"name": "TestOps Copy",
+		"name": "TestOps",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "15533505",
 		"_collection_link": "https://landeron-team.postman.co/workspace/My-Workspace~5b301d1f-af4c-4b52-89f6-fe1cca8e4679/collection/15533505-73115df4-93dc-4da6-b5f2-d1818f4ac632?action=share&source=collection_link&creator=15533505"
@@ -123,15 +123,15 @@
 					"let currentResults = JSON.parse(pm.globals.get(\"testResults\"));\r",
 					"\r",
 					"// ✅ Тест: статус 200\r",
-					"let testName = \"Статус ответа 200\";\r",
-					"let passed = pm.response.code === 200;\r",
+					"var testName = \"Статус ответа 200\";\r",
+					"var passed = pm.response.code === 200;\r",
 					"\r",
 					"pm.test(testName, () => {\r",
 					"    pm.expect(pm.response.code).to.eql(200);\r",
 					"});\r",
 					"\r",
 					"// ⏱ Время ответа\r",
-					"let responseTime = pm.response.responseTime;\r",
+					"var responseTime = pm.response.responseTime;\r",
 					"console.log(`⏱ Время ответа: ${responseTime} мс`);\r",
 					"\r",
 					"// 🧾 Лог в консоль\r",
@@ -150,8 +150,8 @@
 					"pm.globals.set(\"testResults\", JSON.stringify(currentResults));\r",
 					"\r",
 					"// 📈 Обновим статистику\r",
-					"let totalRequests = parseInt(pm.environment.get(\"totalRequests\") || \"0\") + 1;\r",
-					"let totalTime = parseInt(pm.environment.get(\"totalTime\") || \"0\") + responseTime;\r",
+					"var totalRequests = parseInt(pm.environment.get(\"totalRequests\") || \"0\") + 1;\r",
+					"var totalTime = parseInt(pm.environment.get(\"totalTime\") || \"0\") + responseTime;\r",
 					"\r",
 					"pm.environment.set(\"totalRequests\", totalRequests);\r",
 					"pm.environment.set(\"totalTime\", totalTime);\r",
@@ -159,11 +159,10 @@
 					"\r",
 					"// 🧾 Ошибки (для финального вывода)\r",
 					"if (!passed) {\r",
-					"    let failures = pm.environment.get(\"failures\") || \"\";\r",
+					"    var failures = pm.environment.get(\"failures\") || \"\";\r",
 					"    failures += `\\n[${pm.info.requestName}] - статус: ${pm.response.code}`;\r",
 					"    pm.environment.set(\"failures\", failures);\r",
-					"}\r",
-					""
+					"}\r"
 				]
 			}
 		}
