@@ -94,12 +94,12 @@ jobs:
       # Запуск Postman коллекции с репортером Allure
       - name: Run Postman Collection with Allure Reporter
         run: |
-          newman run postman/collection.json \
+          allurectl watch "newman run postman/collection.json \
             --env-var ENDPOINT=${{ env.ENDPOINT }} \
             --env-var TOKEN=${{ env.TOKEN }} \
             -r junit \
             --reporter-junit-export ${{ env.ALLURE_RESULTS }} \
-            --verbose
+            --verbose"
         continue-on-error: true
 
       # Дополнительная диагностика: проверим, есть ли какие-либо файлы отчета Allure
