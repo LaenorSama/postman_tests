@@ -31,54 +31,7 @@
         }
       },
       "response": [],
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "if (!pm.globals.has(\"testResults\")) {",
-              "    pm.globals.set(\"testResults\", JSON.stringify([]));",
-              "}",
-              "let currentResults = JSON.parse(pm.globals.get(\"testResults\"));",
-              "",
-              "let testName = \"Статус ответа 200\";",
-              "let passed = pm.response.code === 200;",
-              "",
-              "pm.test(testName, () => {",
-              "    pm.expect(pm.response.code).to.eql(200);",
-              "});",
-              "",
-              "let responseTime = pm.response.responseTime;",
-              "console.log(`⏱ Время ответа: ${responseTime} мс`);",
-              "console.log(`📋 Тесты для запроса: ${pm.info.requestName}`);",
-              "console.log(`${passed ? \"✅\" : \"❌\"} ${testName}`);",
-              "",
-              "currentResults.push({",
-              "    request: pm.info.requestName,",
-              "    test: testName,",
-              "    passed: passed,",
-              "    status: pm.response.code,",
-              "    time: responseTime",
-              "});",
-              "pm.globals.set(\"testResults\", JSON.stringify(currentResults));",
-              "",
-              "let totalRequests = parseInt(pm.environment.get(\"totalRequests\") || \"0\") + 1;",
-              "let totalTime = parseInt(pm.environment.get(\"totalTime\") || \"0\") + responseTime;",
-              "",
-              "pm.environment.set(\"totalRequests\", totalRequests);",
-              "pm.environment.set(\"totalTime\", totalTime);",
-              "pm.environment.set(\"avgTime\", (totalTime / totalRequests).toFixed(2));",
-              "",
-              "if (!passed) {",
-              "    let failures = pm.environment.get(\"failures\") || \"\";",
-              "    failures += `\\n[${pm.info.requestName}] - статус: ${pm.response.code}`;",
-              "    pm.environment.set(\"failures\", failures);",
-              "}"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ]
+      "event": []
     },
     {
       "name": "GET Projects",
@@ -117,54 +70,7 @@
         }
       },
       "response": [],
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "if (!pm.globals.has(\"testResults\")) {",
-              "    pm.globals.set(\"testResults\", JSON.stringify([]));",
-              "}",
-              "let currentResults = JSON.parse(pm.globals.get(\"testResults\"));",
-              "",
-              "let testName = \"Статус ответа 200\";",
-              "let passed = pm.response.code === 200;",
-              "",
-              "pm.test(testName, () => {",
-              "    pm.expect(pm.response.code).to.eql(200);",
-              "});",
-              "",
-              "let responseTime = pm.response.responseTime;",
-              "console.log(`⏱ Время ответа: ${responseTime} мс`);",
-              "console.log(`📋 Тесты для запроса: ${pm.info.requestName}`);",
-              "console.log(`${passed ? \"✅\" : \"❌\"} ${testName}`);",
-              "",
-              "currentResults.push({",
-              "    request: pm.info.requestName,",
-              "    test: testName,",
-              "    passed: passed,",
-              "    status: pm.response.code,",
-              "    time: responseTime",
-              "});",
-              "pm.globals.set(\"testResults\", JSON.stringify(currentResults));",
-              "",
-              "let totalRequests = parseInt(pm.environment.get(\"totalRequests\") || \"0\") + 1;",
-              "let totalTime = parseInt(pm.environment.get(\"totalTime\") || \"0\") + responseTime;",
-              "",
-              "pm.environment.set(\"totalRequests\", totalRequests);",
-              "pm.environment.set(\"totalTime\", totalTime);",
-              "pm.environment.set(\"avgTime\", (totalTime / totalRequests).toFixed(2));",
-              "",
-              "if (!passed) {",
-              "    let failures = pm.environment.get(\"failures\") || \"\";",
-              "    failures += `\\n[${pm.info.requestName}] - статус: ${pm.response.code}`;",
-              "    pm.environment.set(\"failures\", failures);",
-              "}"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ]
+      "event": []
     }
   ],
   "event": [
