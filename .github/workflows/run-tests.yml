@@ -99,6 +99,7 @@ jobs:
             --env-var TOKEN=${{ env.TOKEN }} \
             -r allure \
             --reporter-allure-export ${{ env.ALLURE_RESULTS }}
+            --verbose
         continue-on-error: true
 
       # Дополнительная диагностика: проверим, есть ли какие-либо файлы отчета Allure
