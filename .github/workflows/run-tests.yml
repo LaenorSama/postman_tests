@@ -109,7 +109,7 @@ jobs:
       # Запуск Postman коллекции с репортером Allure
       - name: Run Postman Collection with Allure Reporter
         run: 
-          allurectl watch -- /postman/collection1.json npm test
+          allurectl watch npm test
         continue-on-error: true
 
       # Дополнительная диагностика: проверим, есть ли какие-либо файлы отчета Allure
