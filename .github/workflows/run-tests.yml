@@ -2,14 +2,14 @@ name: Run Postman Tests
 
 # переменные окружения
 env:
-    ENDPOINT: ${{ secrets.ENDPOINT }}
-    PROJECT_ID: ${{ secrets.PROJECT_ID }}
-    TOKEN: ${{ secrets.TOKEN }}
-    ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}
-    ALLURE_RESULTS: "./out/allure-results"
-    BROWSER: ${{ inputs.BROWSER || 'OperaGX' }}
-    OS: ${{ inputs.OS || 'Win_11' }}
-    BRANCH: ${{ github.ref_name }}
+  ENDPOINT: ${{ secrets.ENDPOINT }}
+  PROJECT_ID: ${{ secrets.PROJECT_ID }}
+  TOKEN: ${{ secrets.TOKEN }}
+  ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}
+  ALLURE_RESULTS: "./out/allure-results"
+  BROWSER: ${{ inputs.BROWSER || 'OperaGX' }}
+  OS: ${{ inputs.OS || 'Win_11' }}
+  BRANCH: ${{ github.ref_name }}
 
 on:
   push:
@@ -63,10 +63,19 @@ jobs:
         run: |
           rm -rf allure-results .allure
 
+      - name: Create Allure results directory
+        run: mkdir -p ./out/allure-results
+
+      - name: Check if allure-results directory is empty
+        run: ls -alh ./out/allure-results
+
       - name: Run Postman Collection
         run: |
-          allurectl watch "newman run postman/collection.json \
+          newman run postman/collection.json \
             --env-var ENDPOINT=${{ secrets.ENDPOINT }} \
             --env-var TOKEN=${{ secrets.TOKEN }} \
             -r allure,cli,junit \
-            --allure-attachment-dir=${{ env.ALLURE_RESULTS }}"
+            --allure-attachment-dir=${{ env.ALLURE_RESULTS }}
+
+      - name: Check Allure results directory after run
+        run: ls -alh ./out/allure-results
