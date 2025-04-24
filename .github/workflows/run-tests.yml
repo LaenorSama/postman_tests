@@ -10,6 +10,7 @@ env:
   BROWSER: ${{ inputs.BROWSER || 'OperaGX' }}
   OS: ${{ inputs.OS || 'Win_11' }}
   BRANCH: ${{ github.ref_name }}
+  ALLURE_LAUNCH_TAGS: "postman, newman"
 
 on:
   push:
