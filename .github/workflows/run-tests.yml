@@ -65,4 +65,8 @@ jobs:
 
       - name: Run Postman Collection
         run: |
-          allurectl watch "newman run postman/collection.json"
+          allurectl watch "newman run postman/collection.json \
+            --env-var ENDPOINT=${{ secrets.ENDPOINT }} \
+            --env-var TOKEN=${{ secrets.TOKEN }} \
+            -r allure,cli,junit \
+            --allure-attachment-dir=${{ env.ALLURE_RESULTS }}"
