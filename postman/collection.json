@@ -1,77 +1,151 @@
-if (!pm.globals.has("testResults")) {
-    pm.globals.set("testResults", JSON.stringify([]));
-}
-
-let currentResults = JSON.parse(pm.globals.get("testResults"));
-
-var testName = "Статус ответа 200 для Get assigned members";
-var passed = pm.response.code === 200;
-
-pm.test("Test: " + testName, () => {
-    pm.expect(pm.response.code).to.eql(200);
-});
-
-var responseTime = pm.response.responseTime;
-console.log(`⏱ Время ответа для Get assigned members: ${responseTime} мс`);
-
-console.log(`📋 Тесты для запроса: ${pm.info.requestName}`);
-console.log(`${passed ? "✅" : "❌"} ${testName}`);
-
-currentResults.push({
-    request: pm.info.requestName,
-    test: testName,
-    passed: passed,
-    status: pm.response.code,
-    time: responseTime
-});
-
-pm.globals.set("testResults", JSON.stringify(currentResults));
-
-var totalRequests = parseInt(pm.environment.get("totalRequests") || "0") + 1;
-var totalTime = parseInt(pm.environment.get("totalTime") || "0") + responseTime;
-
-pm.environment.set("totalRequests", totalRequests);
-pm.environment.set("totalTime", totalTime);
-pm.environment.set("avgTime", (totalTime / totalRequests).toFixed(2));
-
-if (!passed) {
-    var failures = pm.environment.get("failures") || "";
-    failures += `\n[${pm.info.requestName}] - статус: ${pm.response.code}`;
-    pm.environment.set("failures", failures);
-}
-
-testName = "Статус ответа 200 для Get projects";
-passed = pm.response.code === 200;
-
-pm.test("Test: " + testName, () => {
-    pm.expect(pm.response.code).to.eql(200);
-});
-
-responseTime = pm.response.responseTime;
-console.log(`⏱ Время ответа для Get projects: ${responseTime} мс`);
-
-console.log(`📋 Тесты для запроса: ${pm.info.requestName}`);
-console.log(`${passed ? "✅" : "❌"} ${testName}`);
-
-currentResults.push({
-    request: pm.info.requestName,
-    test: testName,
-    passed: passed,
-    status: pm.response.code,
-    time: responseTime
-});
-
-pm.globals.set("testResults", JSON.stringify(currentResults));
-
-totalRequests = parseInt(pm.environment.get("totalRequests") || "0") + 1;
-totalTime = parseInt(pm.environment.get("totalTime") || "0") + responseTime;
-
-pm.environment.set("totalRequests", totalRequests);
-pm.environment.set("totalTime", totalTime);
-pm.environment.set("avgTime", (totalTime / totalRequests).toFixed(2));
-
-if (!passed) {
-    failures = pm.environment.get("failures") || "";
-    failures += `\n[${pm.info.requestName}] - статус: ${pm.response.code}`;
-    pm.environment.set("failures", failures);
+{
+  "info": {
+    "_postman_id": "73115df4-93dc-4da6-b5f2-d1818f4ac632",
+    "name": "TestOps",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "15533505",
+    "_collection_link": "https://landeron-team.postman.co/workspace/My-Workspace~5b301d1f-af4c-4b52-89f6-fe1cca8e4679/collection/15533505-73115df4-93dc-4da6-b5f2-d1818f4ac632?action=share&source=collection_link&creator=15533505"
+  },
+  "item": [
+    {
+      "name": "Get assigned members",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{JWT_TOKEN}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{ENDPOINT}}/api/launch/1797/assignees",
+          "host": [
+            "{{ENDPOINT}}"
+          ],
+          "path": [
+            "api",
+            "launch",
+            "1797",
+            "assignees"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get projects",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{JWT_TOKEN}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{ENDPOINT}}/api/project?page=0&size=100&sort=name%2CASC",
+          "host": [
+            "{{ENDPOINT}}"
+          ],
+          "path": [
+            "api",
+            "project"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "100"
+            },
+            {
+              "key": "sort",
+              "value": "name%2CASC"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.sendRequest({",
+          "    url: \"https://demo.qatools.cloud/api/uaa/oauth/token\",",
+          "    method: \"POST\",",
+          "    header: {",
+          "        \"Accept\": \"application/json\"",
+          "    },",
+          "    body: {",
+          "        mode: \"urlencoded\",",
+          "        urlencoded: [",
+          "            { key: \"grant_type\", value: \"apitoken\", type: \"text\" },",
+          "            { key: \"scope\", value: \"openid\", type: \"text\" },",
+          "            { key: \"token\", value: pm.environment.get(\"TOKEN\"), type: \"text\" }",
+          "        ]",
+          "    }",
+          "}, function (err, res) {",
+          "    if (!err && res.json().access_token) {",
+          "        var token = res.json().access_token;",
+          "        pm.environment.set(\"JWT_TOKEN\", token);",
+          "    }",
+          "});"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// 🧪 Хранилище тестов",
+          "if (!pm.globals.has(\"testResults\")) {",
+          "    pm.globals.set(\"testResults\", JSON.stringify([]));",
+          "}",
+          "let currentResults = JSON.parse(pm.globals.get(\"testResults\"));",
+          "// ✅ Тест: статус 200",
+          "var testName = \"Статус ответа 200\";",
+          "var passed = pm.response.code === 200;",
+          "pm.test(\"Test: \" + testName, () => {",
+          "    pm.expect(pm.response.code).to.eql(200);",
+          "});",
+          "// ⏱ Время ответа",
+          "var responseTime = pm.response.responseTime;",
+          "console.log(`⏱ Время ответа: ${responseTime} мс`);",
+          "// 🧾 Лог в консоль",
+          "console.log(`📋 Тесты для запроса: ${pm.info.requestName}`);",
+          "console.log(`${passed ? \"✅\" : \"❌\"} ${testName}`);",
+          "// 📦 Добавим в глобальное хранилище (по желанию — можно в env)",
+          "currentResults.push({",
+          "    request: pm.info.requestName,",
+          "    test: testName,",
+          "    passed: passed,",
+          "    status: pm.response.code,",
+          "    time: responseTime",
+          "});",
+          "pm.globals.set(\"testResults\", JSON.stringify(currentResults));",
+          "// 📈 Обновим статистику",
+          "var totalRequests = parseInt(pm.environment.get(\"totalRequests\") || \"0\") + 1;",
+          "var totalTime = parseInt(pm.environment.get(\"totalTime\") || \"0\") + responseTime;",
+          "pm.environment.set(\"totalRequests\", totalRequests);",
+          "pm.environment.set(\"totalTime\", totalTime);",
+          "pm.environment.set(\"avgTime\", (totalTime / totalRequests).toFixed(2));",
+          "// 🧾 Ошибки (для финального вывода)",
+          "if (!passed) {",
+          "    var failures = pm.environment.get(\"failures\") || \"\";",
+          "    failures += `\\n[${pm.info.requestName}] - статус: ${pm.response.code}`;",
+          "    pm.environment.set(\"failures\", failures);",
+          "}"
+        ]
+      }
+    }
+  ]
 }
